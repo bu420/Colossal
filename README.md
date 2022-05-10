@@ -1,2 +1,0 @@
-# Colossal
- Minecraft Forge Mod
