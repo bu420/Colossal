@@ -2,6 +2,7 @@ package bu420.colossal.event;
 
 import bu420.colossal.EntityInit;
 import bu420.colossal.Main;
+import bu420.colossal.entity.NightTerror;
 import bu420.colossal.entity.SeaSerpent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -12,5 +13,6 @@ public class CommonForgeEvents {
     @SubscribeEvent
     public static void registerAttributes(EntityAttributeCreationEvent event) {
         event.put(EntityInit.SEA_SERPENT.get(), SeaSerpent.createAttributes().build());
+        event.put(EntityInit.NIGHT_TERROR.get(), NightTerror.createAttributes().build());
     }
 }

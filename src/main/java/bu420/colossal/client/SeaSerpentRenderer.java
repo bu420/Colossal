@@ -77,7 +77,7 @@ public class SeaSerpentRenderer extends EntityRenderer<SeaSerpent> {
         stack.scale(-1, -1, 1);
         stack.translate(0, -1.501, 0);
 
-        VertexConsumer buffer = source.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(seaSerpent)));
+        VertexConsumer buffer = source.getBuffer(RenderType.entityCutoutNoCull(TEXTURE));
         int overlay = OverlayTexture.pack(0, OverlayTexture.v(seaSerpent.hurtTime > 0 || seaSerpent.deathTime > 0));
 
         Vec3 headRenderPos = null;

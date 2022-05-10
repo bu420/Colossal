@@ -1,6 +1,7 @@
 package bu420.colossal.event;
 
 import bu420.colossal.Main;
+import bu420.colossal.entity.Serpent;
 import bu420.colossal.entity.SerpentPart;
 import bu420.colossal.network.PacketHandler;
 import bu420.colossal.network.SerpentPartHitPacket;

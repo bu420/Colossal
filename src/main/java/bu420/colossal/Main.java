@@ -1,6 +1,7 @@
 package bu420.colossal;
 
 import bu420.colossal.network.PacketHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -18,5 +19,9 @@ public class Main {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         ItemInit.ITEMS.register(bus);
         EntityInit.ENTITIES.register(bus);
+    }
+
+    public static boolean isDay() {
+        return Minecraft.getInstance().level.getDayTime() % 24000 < 12000;
     }
 }

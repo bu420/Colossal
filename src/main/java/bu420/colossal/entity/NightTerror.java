@@ -25,10 +25,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SeaSerpent extends WaterAnimal implements Serpent<SeaSerpent> {
-    private final List<SerpentPart<SeaSerpent>> parts;
+public class NightTerror extends WaterAnimal implements Serpent<NightTerror> {
+    private final List<SerpentPart<NightTerror>> parts;
 
-    public SeaSerpent(EntityType<? extends SeaSerpent> type, Level level) {
+    public NightTerror(EntityType<? extends NightTerror> type, Level level) {
         super(type, level);
 
         noCulling = true;
@@ -37,11 +37,11 @@ public class SeaSerpent extends WaterAnimal implements Serpent<SeaSerpent> {
         lookControl = new SmoothSwimmingLookControl(this, 10);
 
         parts = new ArrayList<>();
-        parts.add(new SerpentPart<>(this, 1, 0.625F, "head"));
+        parts.add(new SerpentPart<>(this, 1.125F, 1.125F, "head"));
         for (int i = 0; i < getLength() - 2; i++) {
-            parts.add(new SerpentPart<>(this, 0.5F, 0.625F, "body"));
+            parts.add(new SerpentPart<>(this, 1.125F, 1.125F, "body"));
         }
-        parts.add(new SerpentPart<>(this, 1, 0.625F, "tail"));
+        parts.add(new SerpentPart<>(this, 1.125F, 1.125F, "tail"));
     }
 
     @Override
@@ -110,7 +110,7 @@ public class SeaSerpent extends WaterAnimal implements Serpent<SeaSerpent> {
 
     @Override
     public int getLength() {
-        return 24;
+        return 20;
     }
 
     @Override
@@ -119,22 +119,22 @@ public class SeaSerpent extends WaterAnimal implements Serpent<SeaSerpent> {
     }
 
     @Override
-    public List<SerpentPart<SeaSerpent>> getPartEntities() {
+    public List<SerpentPart<NightTerror>> getPartEntities() {
         return parts;
     }
 
     @Override
-    public SerpentPart<SeaSerpent> getHead() {
+    public SerpentPart<NightTerror> getHead() {
         return parts.get(0);
     }
 
     @Override
-    public List<SerpentPart<SeaSerpent>> getBodies() {
+    public List<SerpentPart<NightTerror>> getBodies() {
         return parts.subList(1, parts.size() - 1);
     }
 
     @Override
-    public SerpentPart<SeaSerpent> getTail() {
+    public SerpentPart<NightTerror> getTail() {
         return parts.get(parts.size() - 1);
     }
 }
