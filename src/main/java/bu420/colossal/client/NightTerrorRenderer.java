@@ -24,8 +24,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class NightTerrorRenderer extends EntityRenderer<NightTerror> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(Main.MODID, "textures/entities/night_terror.png");
+    private static final RenderType OPAQUE = RenderType.entityCutoutNoCull(TEXTURE);
     private static final RenderType OUTER_TRANSLUCENT = RenderType.entityTranslucent(new ResourceLocation(Main.MODID, "textures/entities/night_terror_outer_translucent.png"));
-    private static final RenderType SKELETON = RenderType.beaconBeam(new ResourceLocation(Main.MODID, "textures/entities/night_terror_skeleton.png"), true);
+    private static final RenderType SKELETON = RenderType.entityCutoutNoCull(new ResourceLocation(Main.MODID, "textures/entities/night_terror_skeleton.png"), true);
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Main.MODID, "night_terror"), "main");
 
     private final ModelPart root;
@@ -82,10 +83,10 @@ public class NightTerrorRenderer extends EntityRenderer<NightTerror> {
         int overlay = OverlayTexture.pack(0, OverlayTexture.v(nightTerror.hurtTime > 0 || nightTerror.deathTime > 0));
 
         if (Main.isDay()) {
-            renderModel(nightTerror, partialTicks, stack, source.getBuffer(RenderType.entityCutoutNoCull(TEXTURE)), source, p_115460_, overlay);
+            renderModel(nightTerror, partialTicks, stack, source.getBuffer(OPAQUE), source, p_115460_, overlay);
         }
         else {
-            renderModel(nightTerror, partialTicks, stack, source.getBuffer(SKELETON), source, p_115460_, overlay);
+            renderModel(nightTerror, partialTicks, stack, source.getBuffer(SKELETON), source, 0x00F000F0, overlay);
             renderModel(nightTerror, partialTicks, stack, source.getBuffer(OUTER_TRANSLUCENT), source, p_115460_, overlay);
         }
 

@@ -1,9 +1,11 @@
 package bu420.colossal.entity;
 
 import bu420.colossal.entity.ai.SerpentRandomSwimGoal;
+import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -18,7 +20,11 @@ import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
 import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.entity.PartEntity;
+import org.apache.commons.lang3.mutable.MutableInt;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,6 +33,9 @@ import java.util.List;
 
 public class NightTerror extends WaterAnimal implements Serpent<NightTerror> {
     private final List<SerpentPart<NightTerror>> parts;
+    private final List<Pair<BlockPos, MutableInt>> lights;
+
+    private static final int LIGHT_LIFETIME = 10;
 
     public NightTerror(EntityType<? extends NightTerror> type, Level level) {
         super(type, level);
@@ -42,6 +51,8 @@ public class NightTerror extends WaterAnimal implements Serpent<NightTerror> {
             parts.add(new SerpentPart<>(this, 1.125F, 1.125F, "body"));
         }
         parts.add(new SerpentPart<>(this, 1.125F, 1.125F, "tail"));
+
+        lights = new ArrayList<>();
     }
 
     @Override
@@ -65,7 +76,32 @@ public class NightTerror extends WaterAnimal implements Serpent<NightTerror> {
 
         for (int i = 0; i < parts.size(); i++) {
             parts.get(i).tick(i == 0 ? null : parts.get(i - 1));
+
+            if (random.nextInt(0, 5) == 0) {
+                placeLight(parts.get(i).blockPosition());
+            }
         }
+
+        updateLights();
+    }
+
+    private void placeLight(BlockPos pos) {
+        if (level.getBlockState(pos).is(Blocks.WATER)) {
+            level.setBlockAndUpdate(pos, Blocks.LIGHT.defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, level.getFluidState(new BlockPos(position())).is(FluidTags.WATER)));
+            lights.add(Pair.of(pos, new MutableInt(LIGHT_LIFETIME)));
+        }
+    }
+
+    private void updateLights() {
+        for (var light : lights) {
+            if (light.getRight().decrementAndGet() <= 0) {
+                if (level.getBlockState(light.getLeft()).is(Blocks.LIGHT)) {
+                    level.setBlockAndUpdate(light.getLeft(), Blocks.WATER.defaultBlockState());
+                }
+            }
+        }
+
+        lights.removeIf((light) -> light.getRight().getValue() <= 0);
     }
 
     @Override
