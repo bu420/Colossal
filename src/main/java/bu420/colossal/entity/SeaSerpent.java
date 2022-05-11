@@ -9,34 +9,17 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
-import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
-import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.entity.PartEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class SeaSerpent extends WaterAnimal implements Serpent<SeaSerpent> {
-    private final List<SerpentPart<SeaSerpent>> parts;
-
+public class SeaSerpent extends WaterSerpent<SeaSerpent> {
     public SeaSerpent(EntityType<? extends SeaSerpent> type, Level level) {
         super(type, level);
 
-        noCulling = true;
-
-        moveControl = new SmoothSwimmingMoveControl(this, 20, 10, 0.02F, 0.1F, true);
-        lookControl = new SmoothSwimmingLookControl(this, 10);
-
-        parts = new ArrayList<>();
         parts.add(new SerpentPart<>(this, 1, 0.625F, "head"));
         for (int i = 0; i < getLength() - 2; i++) {
             parts.add(new SerpentPart<>(this, 0.5F, 0.625F, "body"));
@@ -60,12 +43,13 @@ public class SeaSerpent extends WaterAnimal implements Serpent<SeaSerpent> {
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    public int getLength() {
+        return 24;
+    }
 
-        for (int i = 0; i < parts.size(); i++) {
-            parts.get(i).tick(i == 0 ? null : parts.get(i - 1));
-        }
+    @Override
+    public float getPartDamageModifier() {
+        return 2 / 3.0F;
     }
 
     @Override
@@ -91,50 +75,5 @@ public class SeaSerpent extends WaterAnimal implements Serpent<SeaSerpent> {
     @Override
     protected @NotNull SoundEvent getSwimSound() {
         return SoundEvents.GENERIC_SWIM;
-    }
-
-    @Override
-    protected @NotNull PathNavigation createNavigation(@NotNull Level level) {
-        return new WaterBoundPathNavigation(this, level);
-    }
-
-    @Override
-    public boolean isMultipartEntity() {
-        return true;
-    }
-
-    @Override
-    public @NotNull PartEntity<?>[] getParts() {
-        return parts.toArray(PartEntity<?>[]::new);
-    }
-
-    @Override
-    public int getLength() {
-        return 24;
-    }
-
-    @Override
-    public float getPartDamageModifier() {
-        return 2 / 3.0F;
-    }
-
-    @Override
-    public List<SerpentPart<SeaSerpent>> getPartEntities() {
-        return parts;
-    }
-
-    @Override
-    public SerpentPart<SeaSerpent> getHead() {
-        return parts.get(0);
-    }
-
-    @Override
-    public List<SerpentPart<SeaSerpent>> getBodies() {
-        return parts.subList(1, parts.size() - 1);
-    }
-
-    @Override
-    public SerpentPart<SeaSerpent> getTail() {
-        return parts.get(parts.size() - 1);
     }
 }

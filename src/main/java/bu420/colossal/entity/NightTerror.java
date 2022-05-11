@@ -1,7 +1,10 @@
 package bu420.colossal.entity;
 
+import bu420.colossal.Main;
+import bu420.colossal.block.entity.TimedLightBlockEntity;
 import bu420.colossal.entity.ai.SerpentRandomSwimGoal;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -11,18 +14,12 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
-import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
-import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.entity.PartEntity;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
@@ -31,21 +28,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NightTerror extends WaterAnimal implements Serpent<NightTerror> {
-    private final List<SerpentPart<NightTerror>> parts;
+public class NightTerror extends WaterSerpent<NightTerror> {
     private final List<Pair<BlockPos, MutableInt>> lights;
 
-    private static final int LIGHT_LIFETIME = 10;
+    private static final int LIGHT_LIFETIME = 20;
 
     public NightTerror(EntityType<? extends NightTerror> type, Level level) {
         super(type, level);
 
-        noCulling = true;
-
-        moveControl = new SmoothSwimmingMoveControl(this, 20, 10, 0.02F, 0.1F, true);
-        lookControl = new SmoothSwimmingLookControl(this, 10);
-
-        parts = new ArrayList<>();
         parts.add(new SerpentPart<>(this, 1.125F, 1.125F, "head"));
         for (int i = 0; i < getLength() - 2; i++) {
             parts.add(new SerpentPart<>(this, 1.125F, 1.125F, "body"));
@@ -74,34 +64,93 @@ public class NightTerror extends WaterAnimal implements Serpent<NightTerror> {
     public void tick() {
         super.tick();
 
-        for (int i = 0; i < parts.size(); i++) {
-            parts.get(i).tick(i == 0 ? null : parts.get(i - 1));
-
-            if (random.nextInt(0, 5) == 0) {
-                placeLight(parts.get(i).blockPosition());
+        if (!Main.isDay()) {
+            for (var part : parts) {
+                if (random.nextInt(0, 5) == 0) {
+                    //placeLight(part.blockPosition());
+                    //level.setBlockEntity(new TimedLightBlockEntity(new BlockPos(position())));
+                }
             }
         }
 
-        updateLights();
+        //updateLights();
     }
 
-    private void placeLight(BlockPos pos) {
+    /*private void placeLight(BlockPos pos) {
         if (level.getBlockState(pos).is(Blocks.WATER)) {
             level.setBlockAndUpdate(pos, Blocks.LIGHT.defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, level.getFluidState(new BlockPos(position())).is(FluidTags.WATER)));
             lights.add(Pair.of(pos, new MutableInt(LIGHT_LIFETIME)));
+        }
+        else if (level.getBlockState(pos).is(Blocks.LIGHT)) {
+            for (var light : lights) {
+                if (light.getLeft().equals(pos)) {
+                    light.getRight().setValue(LIGHT_LIFETIME);
+                    break;
+                }
+            }
         }
     }
 
     private void updateLights() {
         for (var light : lights) {
             if (light.getRight().decrementAndGet() <= 0) {
-                if (level.getBlockState(light.getLeft()).is(Blocks.LIGHT)) {
-                    level.setBlockAndUpdate(light.getLeft(), Blocks.WATER.defaultBlockState());
-                }
+                removeLight(light.getLeft());
             }
         }
 
         lights.removeIf((light) -> light.getRight().getValue() <= 0);
+    }
+
+    private void removeLight(BlockPos pos) {
+        System.out.println("try remove");
+        if (level.getBlockState(pos).is(Blocks.LIGHT)) {
+            System.out.println("removed");
+            level.setBlockAndUpdate(pos, Blocks.WATER.defaultBlockState());
+        }
+    }
+
+    public void removeAllLights() {
+        for (var light : lights) {
+            removeLight(light.getLeft());
+        }
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+
+        int[] array = new int[lights.size() * 3];
+
+        for (int i = 0; i < lights.size(); i++) {
+            var pos = lights.get(i).getLeft();
+
+            array[i * 3 + 0] = pos.getX();
+            array[i * 3 + 1] = pos.getY();
+            array[i * 3 + 2] = pos.getZ();
+        }
+
+        tag.putIntArray("Lights", array);
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+
+        int[] array = tag.getIntArray("Lights");
+
+        for (int i = 0; i < array.length / 3; i++) {
+            removeLight(new BlockPos(array[i * 3 + 0], array[i * 3 + 1], array[i * 3 + 2]));
+        }
+    }*/
+
+    @Override
+    public int getLength() {
+        return 20;
+    }
+
+    @Override
+    public float getPartDamageModifier() {
+        return 2 / 3.0F;
     }
 
     @Override
@@ -127,50 +176,5 @@ public class NightTerror extends WaterAnimal implements Serpent<NightTerror> {
     @Override
     protected @NotNull SoundEvent getSwimSound() {
         return SoundEvents.GENERIC_SWIM;
-    }
-
-    @Override
-    protected @NotNull PathNavigation createNavigation(@NotNull Level level) {
-        return new WaterBoundPathNavigation(this, level);
-    }
-
-    @Override
-    public boolean isMultipartEntity() {
-        return true;
-    }
-
-    @Override
-    public @NotNull PartEntity<?>[] getParts() {
-        return parts.toArray(PartEntity<?>[]::new);
-    }
-
-    @Override
-    public int getLength() {
-        return 20;
-    }
-
-    @Override
-    public float getPartDamageModifier() {
-        return 2 / 3.0F;
-    }
-
-    @Override
-    public List<SerpentPart<NightTerror>> getPartEntities() {
-        return parts;
-    }
-
-    @Override
-    public SerpentPart<NightTerror> getHead() {
-        return parts.get(0);
-    }
-
-    @Override
-    public List<SerpentPart<NightTerror>> getBodies() {
-        return parts.subList(1, parts.size() - 1);
-    }
-
-    @Override
-    public SerpentPart<NightTerror> getTail() {
-        return parts.get(parts.size() - 1);
     }
 }

@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class SeaSerpentRenderer extends EntityRenderer<SeaSerpent> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(Main.MODID, "textures/entities/sea_serpent.png");
+    private static final RenderType OPAQUE = RenderType.entityCutoutNoCull(TEXTURE);
     private static final RenderType EYES = RenderType.eyes(new ResourceLocation(Main.MODID, "textures/entities/sea_serpent_eyes.png"));
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Main.MODID, "sea_serpent"), "main");
 
@@ -77,13 +78,17 @@ public class SeaSerpentRenderer extends EntityRenderer<SeaSerpent> {
         stack.scale(-1, -1, 1);
         stack.translate(0, -1.501, 0);
 
-        VertexConsumer buffer = source.getBuffer(RenderType.entityCutoutNoCull(TEXTURE));
         int overlay = OverlayTexture.pack(0, OverlayTexture.v(seaSerpent.hurtTime > 0 || seaSerpent.deathTime > 0));
 
-        Vec3 headRenderPos = null;
-        Vec2 headRot = null;
-        float mouthAnimation = 0;
+        renderModel(seaSerpent, partialTicks, stack, source.getBuffer(OPAQUE), p_115460_, overlay);
+        renderModel(seaSerpent, partialTicks, stack, source.getBuffer(EYES), p_115460_, overlay);
 
+        stack.popPose();
+
+        super.render(seaSerpent, p_115456_, partialTicks, stack, source, p_115460_);
+    }
+
+    private void renderModel(SeaSerpent seaSerpent, float partialTicks, PoseStack stack, VertexConsumer buffer, int p_115460_, int overlay) {
         var parts = seaSerpent.getPartEntities();
         Vec3 prevRenderPos = Vec3.ZERO;
 
@@ -94,9 +99,6 @@ public class SeaSerpentRenderer extends EntityRenderer<SeaSerpent> {
 
             if (i == 0) {
                 Vec2 rot = seaSerpent.getRotationVector();
-                
-                headRenderPos = renderPos;
-                headRot = rot;
 
                 var upper = root.getChild("head").getChild("upper");
                 var lower = root.getChild("head").getChild("lower");
@@ -105,7 +107,7 @@ public class SeaSerpentRenderer extends EntityRenderer<SeaSerpent> {
                 PartPose pose1 = upper.storePose();
 
                 double time = part.level.getGameTime() + partialTicks;
-                mouthAnimation = (float)Math.toRadians((Math.sin(time / 7) + 1) / 2 * 10);
+                double mouthAnimation = Math.toRadians((Math.sin(time / 7) + 1) / 2 * 10);
                 upper.xRot -= mouthAnimation;
                 lower.xRot += mouthAnimation;
 
@@ -121,28 +123,6 @@ public class SeaSerpentRenderer extends EntityRenderer<SeaSerpent> {
 
             prevRenderPos = renderPos;
         }
-
-        // Eyes layer.
-        // TODO: figure out a better way to structure this that doesn't involve repeating code from above.
-        if (parts.size() > 0) {
-            var upper = root.getChild("head").getChild("upper");
-            var lower = root.getChild("head").getChild("lower");
-
-            PartPose pose0 = upper.storePose();
-            PartPose pose1 = upper.storePose();
-
-            upper.xRot -= mouthAnimation;
-            lower.xRot += mouthAnimation;
-
-            renderModelPart(root.getChild("head"), seaSerpent.position(), headRenderPos, headRot, stack, source.getBuffer(EYES), 15728640, OverlayTexture.NO_OVERLAY);
-
-            upper.loadPose(pose0);
-            lower.loadPose(pose1);
-        }
-
-        stack.popPose();
-
-        super.render(seaSerpent, p_115456_, partialTicks, stack, source, p_115460_);
     }
 
     private void renderModelPart(ModelPart model, Vec3 origin, Vec3 pos, Vec2 rot, PoseStack stack, VertexConsumer buffer, int p_115460_, int overlay) {

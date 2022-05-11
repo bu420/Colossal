@@ -1,6 +1,5 @@
 package bu420.colossal.event;
 
-import bu420.colossal.EntityInit;
 import bu420.colossal.Main;
 import bu420.colossal.client.NightTerrorRenderer;
 import bu420.colossal.client.SeaSerpentRenderer;
@@ -19,7 +18,7 @@ public class ClientForgeEvents {
 
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(EntityInit.SEA_SERPENT.get(), SeaSerpentRenderer::new);
-        event.registerEntityRenderer(EntityInit.NIGHT_TERROR.get(), NightTerrorRenderer::new);
+        event.registerEntityRenderer(Main.SEA_SERPENT.get(), SeaSerpentRenderer::new);
+        event.registerEntityRenderer(Main.NIGHT_TERROR.get(), NightTerrorRenderer::new);
     }
 }

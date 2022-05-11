@@ -83,11 +83,11 @@ public class NightTerrorRenderer extends EntityRenderer<NightTerror> {
         int overlay = OverlayTexture.pack(0, OverlayTexture.v(nightTerror.hurtTime > 0 || nightTerror.deathTime > 0));
 
         if (Main.isDay()) {
-            renderModel(nightTerror, partialTicks, stack, source.getBuffer(OPAQUE), source, p_115460_, overlay);
+            renderModel(nightTerror, partialTicks, stack, source.getBuffer(OPAQUE), p_115460_, overlay);
         }
         else {
-            renderModel(nightTerror, partialTicks, stack, source.getBuffer(SKELETON), source, 0x00F000F0, overlay);
-            renderModel(nightTerror, partialTicks, stack, source.getBuffer(OUTER_TRANSLUCENT), source, p_115460_, overlay);
+            renderModel(nightTerror, partialTicks, stack, source.getBuffer(SKELETON), 0x00F000F0, overlay);
+            renderModel(nightTerror, partialTicks, stack, source.getBuffer(OUTER_TRANSLUCENT), p_115460_, overlay);
         }
 
         stack.popPose();
@@ -95,7 +95,7 @@ public class NightTerrorRenderer extends EntityRenderer<NightTerror> {
         super.render(nightTerror, p_115456_, partialTicks, stack, source, p_115460_);
     }
 
-    private void renderModel(NightTerror nightTerror, float partialTicks, PoseStack stack, VertexConsumer buffer, MultiBufferSource source, int p_115460_, int overlay) {
+    private void renderModel(NightTerror nightTerror, float partialTicks, PoseStack stack, VertexConsumer buffer, int p_115460_, int overlay) {
         var parts = nightTerror.getPartEntities();
         Vec3 prevRenderPos = Vec3.ZERO;
 

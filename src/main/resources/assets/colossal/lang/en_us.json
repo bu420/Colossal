@@ -1,5 +1,6 @@
 {
     "item.colossal.sea_serpent_spawn_egg": "Sea Serpent Spawn Egg",
+    "block.colossal.timed_light_block": "Timed Light Block",
     "entity.colossal.sea_serpent": "Sea Serpent",
     "entity.colossal.night_terror": "Night Terror"
 }
