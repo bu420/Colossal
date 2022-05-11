@@ -17,13 +17,10 @@ public class TimedLightBlockEntity extends BlockEntity {
     }
 
     public static <T extends BlockEntity> void tick(Level level, BlockPos pos, BlockState state, T entity) {
-        System.out.println("TICK FROM BLOCK ENTITY");
-
         if (entity instanceof TimedLightBlockEntity light) {
-            if (light.current-- == 0) {
+            if (--light.current == 0) {
                 if (level.getBlockEntity(light.getBlockPos()).getType() == Main.TIMED_LIGHT_BLOCK_ENTITY.get()) {
                     level.setBlockAndUpdate(pos, Blocks.WATER.defaultBlockState());
-                    //light.setRemoved();
                 }
             }
         }

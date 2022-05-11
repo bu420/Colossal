@@ -1,14 +1,11 @@
 package bu420.colossal.entity;
 
 import bu420.colossal.Main;
-import bu420.colossal.block.entity.TimedLightBlockEntity;
 import bu420.colossal.entity.ai.SerpentRandomSwimGoal;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -30,8 +27,6 @@ import java.util.List;
 
 public class NightTerror extends WaterSerpent<NightTerror> {
     private final List<Pair<BlockPos, MutableInt>> lights;
-
-    private static final int LIGHT_LIFETIME = 20;
 
     public NightTerror(EntityType<? extends NightTerror> type, Level level) {
         super(type, level);
@@ -67,81 +62,17 @@ public class NightTerror extends WaterSerpent<NightTerror> {
         if (!Main.isDay()) {
             for (var part : parts) {
                 if (random.nextInt(0, 5) == 0) {
-                    //placeLight(part.blockPosition());
-                    //level.setBlockEntity(new TimedLightBlockEntity(new BlockPos(position())));
+                    placeLight(part.blockPosition());
                 }
             }
         }
-
-        //updateLights();
     }
 
-    /*private void placeLight(BlockPos pos) {
+    private void placeLight(BlockPos pos) {
         if (level.getBlockState(pos).is(Blocks.WATER)) {
-            level.setBlockAndUpdate(pos, Blocks.LIGHT.defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, level.getFluidState(new BlockPos(position())).is(FluidTags.WATER)));
-            lights.add(Pair.of(pos, new MutableInt(LIGHT_LIFETIME)));
-        }
-        else if (level.getBlockState(pos).is(Blocks.LIGHT)) {
-            for (var light : lights) {
-                if (light.getLeft().equals(pos)) {
-                    light.getRight().setValue(LIGHT_LIFETIME);
-                    break;
-                }
-            }
+            level.setBlockAndUpdate(pos, Main.TIMED_LIGHT_BLOCK.get().defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, true));
         }
     }
-
-    private void updateLights() {
-        for (var light : lights) {
-            if (light.getRight().decrementAndGet() <= 0) {
-                removeLight(light.getLeft());
-            }
-        }
-
-        lights.removeIf((light) -> light.getRight().getValue() <= 0);
-    }
-
-    private void removeLight(BlockPos pos) {
-        System.out.println("try remove");
-        if (level.getBlockState(pos).is(Blocks.LIGHT)) {
-            System.out.println("removed");
-            level.setBlockAndUpdate(pos, Blocks.WATER.defaultBlockState());
-        }
-    }
-
-    public void removeAllLights() {
-        for (var light : lights) {
-            removeLight(light.getLeft());
-        }
-    }
-
-    @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
-
-        int[] array = new int[lights.size() * 3];
-
-        for (int i = 0; i < lights.size(); i++) {
-            var pos = lights.get(i).getLeft();
-
-            array[i * 3 + 0] = pos.getX();
-            array[i * 3 + 1] = pos.getY();
-            array[i * 3 + 2] = pos.getZ();
-        }
-
-        tag.putIntArray("Lights", array);
-    }
-
-    @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
-
-        int[] array = tag.getIntArray("Lights");
-
-        for (int i = 0; i < array.length / 3; i++) {
-            removeLight(new BlockPos(array[i * 3 + 0], array[i * 3 + 1], array[i * 3 + 2]));
-        }
-    }*/
 
     @Override
     public int getLength() {
