@@ -24,6 +24,10 @@ public class SerpentRandomSwimGoal<T extends WaterAnimal & Serpent<?>> extends G
             Vec3 pos = BehaviorUtils.getRandomSwimmablePos(serpent, 16, 6);
 
             if (pos != null) {
+                if (serpent.position().subtract(pos).length() < 2) {
+                    return false;
+                }
+
                 dest = pos;
                 return true;
             }

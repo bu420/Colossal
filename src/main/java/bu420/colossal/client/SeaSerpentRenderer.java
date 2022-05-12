@@ -22,8 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class SeaSerpentRenderer extends EntityRenderer<SeaSerpent> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(Main.MODID, "textures/entities/sea_serpent.png");
-    private static final RenderType OPAQUE = RenderType.entityCutoutNoCull(TEXTURE);
-    private static final RenderType EYES = RenderType.eyes(new ResourceLocation(Main.MODID, "textures/entities/sea_serpent_eyes.png"));
+    private static final ResourceLocation EYES = new ResourceLocation(Main.MODID, "textures/entities/sea_serpent_eyes.png");
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Main.MODID, "sea_serpent"), "main");
 
     private final ModelPart root;
@@ -37,32 +36,32 @@ public class SeaSerpentRenderer extends EntityRenderer<SeaSerpent> {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
 
-        PartDefinition head = partdefinition.addOrReplaceChild("head", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 0.0F));
+        PartDefinition head = partdefinition.addOrReplaceChild("head", CubeListBuilder.create(), PartPose.offset(0.0F, 19.0F, 0.0F));
 
         PartDefinition upper = head.addOrReplaceChild("upper", CubeListBuilder.create().texOffs(80, 0).addBox(-4.0F, -6.0F, -16.0F, 8.0F, 6.0F, 16.0F, new CubeDeformation(0.0F))
                 .texOffs(32, 0).addBox(-4.0F, -4.0F, -22.0F, 8.0F, 4.0F, 6.0F, new CubeDeformation(0.0F))
                 .texOffs(16, 12).addBox(0.0F, -10.0F, -7.0F, 0.0F, 4.0F, 6.0F, new CubeDeformation(0.0F))
-                .texOffs(29, 15).addBox(0.0F, -10.0F, -13.0F, 0.0F, 4.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -4.0F, 8.0F));
+                .texOffs(29, 15).addBox(0.0F, -10.0F, -13.0F, 0.0F, 4.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 1.0F, 8.0F));
 
-        upper.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(72, 67).addBox(-4.0F, 0.0F, 0.0F, 8.0F, 1.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, -22.0F, -0.0873F, 0.0F, 0.0F));
+        PartDefinition cube_r1 = upper.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(72, 67).addBox(-4.0F, 0.0F, 0.0F, 8.0F, 1.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, -22.0F, -0.0873F, 0.0F, 0.0F));
 
-        upper.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(84, 27).addBox(0.0F, 0.0F, -11.0F, 0.0F, 1.0F, 22.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(4.0F, 0.0F, -11.0F, 0.0F, 0.0F, -0.0873F));
+        PartDefinition cube_r2 = upper.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(84, 27).addBox(0.0F, 0.0F, -11.0F, 0.0F, 1.0F, 22.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(4.0F, 0.0F, -11.0F, 0.0F, 0.0F, -0.0873F));
 
-        upper.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(84, 27).addBox(0.0F, 0.0F, -11.0F, 0.0F, 1.0F, 22.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-4.0F, 0.0F, -11.0F, 0.0F, 0.0F, 0.0873F));
+        PartDefinition cube_r3 = upper.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(84, 27).addBox(0.0F, 0.0F, -11.0F, 0.0F, 1.0F, 22.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-4.0F, 0.0F, -11.0F, 0.0F, 0.0F, 0.0873F));
 
-        PartDefinition lower = head.addOrReplaceChild("lower", CubeListBuilder.create().texOffs(0, 35).addBox(-4.0F, 0.0F, -22.0F, 8.0F, 4.0F, 22.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -4.0F, 8.0F));
+        PartDefinition lower = head.addOrReplaceChild("lower", CubeListBuilder.create().texOffs(0, 35).addBox(-4.0F, 0.0F, -22.0F, 8.0F, 4.0F, 22.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 1.0F, 8.0F));
 
-        lower.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(0, 63).addBox(-4.0F, -1.0F, 0.0F, 8.0F, 1.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, -22.0F, 0.0873F, 0.0F, 0.0F));
+        PartDefinition cube_r4 = lower.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(0, 63).addBox(-4.0F, -1.0F, 0.0F, 8.0F, 1.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, -22.0F, 0.0873F, 0.0F, 0.0F));
 
-        lower.addOrReplaceChild("cube_r5", CubeListBuilder.create().texOffs(68, 38).addBox(0.0F, -1.0F, -11.0F, 0.0F, 1.0F, 22.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(4.0F, 0.0F, -11.0F, 0.0F, 0.0F, 0.0873F));
+        PartDefinition cube_r5 = lower.addOrReplaceChild("cube_r5", CubeListBuilder.create().texOffs(68, 38).addBox(0.0F, -1.0F, -11.0F, 0.0F, 1.0F, 22.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(4.0F, 0.0F, -11.0F, 0.0F, 0.0F, 0.0873F));
 
-        lower.addOrReplaceChild("cube_r6", CubeListBuilder.create().texOffs(68, 38).addBox(0.0F, -1.0F, -11.0F, 0.0F, 1.0F, 22.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-4.0F, 0.0F, -11.0F, 0.0F, 0.0F, -0.0873F));
+        PartDefinition cube_r6 = lower.addOrReplaceChild("cube_r6", CubeListBuilder.create().texOffs(68, 38).addBox(0.0F, -1.0F, -11.0F, 0.0F, 1.0F, 22.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-4.0F, 0.0F, -11.0F, 0.0F, 0.0F, -0.0873F));
 
-        partdefinition.addOrReplaceChild("body", CubeListBuilder.create().texOffs(16, 12).addBox(0.0F, -14.0F, -3.0F, 0.0F, 4.0F, 6.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 0).addBox(-4.0F, -10.0F, -4.0F, 8.0F, 10.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
+        PartDefinition body = partdefinition.addOrReplaceChild("body", CubeListBuilder.create().texOffs(16, 12).addBox(0.0F, -9.0F, -3.0F, 0.0F, 4.0F, 6.0F, new CubeDeformation(0.0F))
+                .texOffs(0, 0).addBox(-4.0F, -5.0F, -4.0F, 8.0F, 10.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 19.0F, 0.0F));
 
-        partdefinition.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(0, 18).addBox(-2.0F, -9.0F, -9.0F, 4.0F, 8.0F, 8.0F, new CubeDeformation(0.0F))
-                .texOffs(50, 71).addBox(0.0F, -14.0F, -1.0F, 0.0F, 18.0F, 39.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
+        PartDefinition tail = partdefinition.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(0, 18).addBox(-2.0F, -4.0F, -8.0F, 4.0F, 8.0F, 8.0F, new CubeDeformation(0.0F))
+                .texOffs(50, 71).addBox(0.0F, -9.0F, 0.0F, 0.0F, 18.0F, 39.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 19.0F, 0.0F));
 
         return LayerDefinition.create(meshdefinition, 128, 128);
     }
@@ -80,8 +79,8 @@ public class SeaSerpentRenderer extends EntityRenderer<SeaSerpent> {
 
         int overlay = OverlayTexture.pack(0, OverlayTexture.v(seaSerpent.hurtTime > 0 || seaSerpent.deathTime > 0));
 
-        renderModel(seaSerpent, partialTicks, stack, source.getBuffer(OPAQUE), p_115460_, overlay);
-        renderModel(seaSerpent, partialTicks, stack, source.getBuffer(EYES), p_115460_, overlay);
+        renderModel(seaSerpent, partialTicks, stack, source.getBuffer(RenderType.entityCutoutNoCull(TEXTURE)), p_115460_, overlay);
+        renderModel(seaSerpent, partialTicks, stack, source.getBuffer(RenderType.eyes(EYES)), p_115460_, overlay);
 
         stack.popPose();
 
