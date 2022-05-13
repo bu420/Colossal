@@ -6,6 +6,7 @@ import bu420.colossal.entity.SeaSerpent;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.BossHealthOverlay;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -86,7 +87,7 @@ public class NightTerrorRenderer extends EntityRenderer<NightTerror> {
         else {
             renderModel(nightTerror, partialTicks, stack, source.getBuffer(RenderType.entityCutoutNoCull(SKELETON)), 0x00F000F0, overlay, 1);
 
-            float alpha = ((float)Math.sin((nightTerror.level.getGameTime() + partialTicks) / 5.0F) + 1) / 2.0F * 0.5F + 0.25F;
+            float alpha = ((float)Math.sin((nightTerror.level.getGameTime() + partialTicks) / 7.5F) + 1) / 4.0F;
             renderModel(nightTerror, partialTicks, stack, source.getBuffer(RenderType.entityTranslucent(SKIN)), p_115460_, overlay, alpha);
         }
 

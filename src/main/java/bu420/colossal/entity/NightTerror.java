@@ -6,30 +6,28 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import org.apache.commons.lang3.mutable.MutableInt;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class NightTerror extends WaterSerpent<NightTerror> {
-    private final List<Pair<BlockPos, MutableInt>> lights;
+    private final BossHealthBar healthBar;
 
     public NightTerror(EntityType<? extends NightTerror> type, Level level) {
         super(type, level);
+
+        moveControl = new SmoothSwimmingMoveControl(this, 20, 10, 0.02F, 0.1F, true);
 
         parts.add(new SerpentPart<>(this, 1.125F, 1.125F, "head"));
         for (int i = 0; i < getLength() - 2; i++) {
@@ -37,7 +35,7 @@ public class NightTerror extends WaterSerpent<NightTerror> {
         }
         parts.add(new SerpentPart<>(this, 1.125F, 1.125F, "tail"));
 
-        lights = new ArrayList<>();
+        healthBar = new BossHealthBar(this, BossEvent.BossBarColor.GREEN);
     }
 
     @Override
@@ -52,7 +50,7 @@ public class NightTerror extends WaterSerpent<NightTerror> {
                 .add(Attributes.MAX_HEALTH, 50)
                 .add(Attributes.FOLLOW_RANGE, 40)
                 .add(Attributes.ATTACK_DAMAGE, 5)
-                .add(Attributes.MOVEMENT_SPEED, 1.2);
+                .add(Attributes.MOVEMENT_SPEED, 3);
     }
 
     @Override
@@ -66,22 +64,30 @@ public class NightTerror extends WaterSerpent<NightTerror> {
                 }
             }
         }
+
+        healthBar.tick();
     }
 
     private void placeLight(BlockPos pos) {
-        if (level.getBlockState(pos).is(Blocks.WATER)) {
+        if (level.isWaterAt(pos)) {
             level.setBlockAndUpdate(pos, Main.TIMED_LIGHT_BLOCK.get().defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, true));
         }
     }
 
     @Override
     public int getLength() {
-        return 20;
+        return 30;
     }
 
     @Override
     public float getPartDamageModifier() {
         return 2 / 3.0F;
+    }
+
+    @Override
+    public void onRemovedFromWorld() {
+        super.onRemovedFromWorld();
+        healthBar.remove();
     }
 
     @Override
